@@ -71,7 +71,6 @@ type (
 	Keeper                 = keeper.Keeper
 	SupplyKeeper           = types.SupplyKeeper
 	BaseSendKeeper         = types.BankKeeper
-	ViewKeeper             = types.ViewKeeper
 	AccountKeeper          = types.AccountKeeper
 	Input                  = types.Input
 	Output                 = types.Output

@@ -42,12 +42,10 @@ func queryLiquidity(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, e
 	}
 
 	reservePool := k.GetReservePool(ctx, params.ID)
-	// all liquidity vouchers in module account
-	liquidities := k.sk.GetSupply(ctx).GetTotal()
 
 	standard := sdk.NewCoin(standardDenom, reservePool.AmountOf(standardDenom))
 	token := sdk.NewCoin(tokenDenom, reservePool.AmountOf(tokenDenom))
-	liquidity := sdk.NewCoin(uniDenom, liquidities.AmountOf(uniDenom))
+	liquidity := k.bk.GetBalance(ctx, k.sk.GetModuleAddress(types.ModuleName), uniDenom)
 
 	swapParams := k.GetParams(ctx)
 	fee := swapParams.Fee.String()

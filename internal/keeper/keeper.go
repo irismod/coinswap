@@ -19,7 +19,6 @@ type Keeper struct {
 	cdc        *codec.Codec
 	storeKey   sdk.StoreKey
 	bk         types.BankKeeper
-	vk         types.ViewKeeper
 	ak         types.AccountKeeper
 	sk         types.SupplyKeeper
 	paramSpace params.Subspace
@@ -96,7 +95,7 @@ func (k Keeper) AddLiquidity(ctx sdk.Context, msg types.MsgAddLiquidity) error {
 	reservePool := k.GetReservePool(ctx, uniDenom)
 	standardReserveAmt := reservePool.AmountOf(standardDenom)
 	tokenReserveAmt := reservePool.AmountOf(msg.MaxToken.Denom)
-	liquidity := k.sk.GetSupply(ctx).GetTotal().AmountOf(uniDenom)
+	liquidity := k.bk.GetBalance(ctx, k.sk.GetModuleAddress(types.ModuleName), uniDenom).Amount
 
 	var mintLiquidityAmt sdk.Int
 	var depositToken sdk.Coin
@@ -110,7 +109,7 @@ func (k Keeper) AddLiquidity(ctx sdk.Context, msg types.MsgAddLiquidity) error {
 	} else {
 		mintLiquidityAmt = (liquidity.Mul(msg.ExactStandardAmt)).Quo(standardReserveAmt)
 		if mintLiquidityAmt.LT(msg.MinLiquidity) {
-			return sdkerrors.Wrap(types.ErrConstraintNotMet, fmt.Sprintf("liquidity amount not met, user expected: no less than %s, actual: %s", msg.MinLiquidity.String(), mintLiquidityAmt.String()))
+			return sdkerrors.Wrap(types.ErrConstraintNotMet, fmt.Sprintf("liquidityAmt amount not met, user expected: no less than %s, actual: %s", msg.MinLiquidity.String(), mintLiquidityAmt.String()))
 		}
 		depositAmt := (tokenReserveAmt.Mul(msg.ExactStandardAmt)).Quo(standardReserveAmt).AddRaw(1)
 		depositToken = sdk.NewCoin(msg.MaxToken.Denom, depositAmt)
@@ -169,7 +168,8 @@ func (k Keeper) RemoveLiquidity(ctx sdk.Context, msg types.MsgRemoveLiquidity) e
 
 	standardReserveAmt := reservePool.AmountOf(standardDenom)
 	tokenReserveAmt := reservePool.AmountOf(minTokenDenom)
-	liquidityReserve := k.sk.GetSupply(ctx).GetTotal().AmountOf(uniDenom)
+	liquidityReserve := k.bk.GetBalance(ctx, k.sk.GetModuleAddress(types.ModuleName), uniDenom).Amount
+
 	if standardReserveAmt.LT(msg.MinStandardAmt) {
 		return sdkerrors.Wrap(types.ErrInsufficientFunds, fmt.Sprintf("insufficient %s funds, user expected: %s, actual: %s", standardDenom, msg.MinStandardAmt.String(), standardReserveAmt.String()))
 	}
@@ -235,7 +235,7 @@ func (k Keeper) GetReservePool(ctx sdk.Context, uniDenom string) (coins sdk.Coin
 	if acc == nil {
 		return nil
 	}
-	return k.vk.GetAllBalances(ctx, acc.GetAddress())
+	return k.bk.GetAllBalances(ctx, acc.GetAddress())
 }
 
 // GetParams gets the parameters for the coinswap module.
