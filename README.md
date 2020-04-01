@@ -1,2 +1,1 @@
-# coinswap
-Coinswap
+# Coinswap
