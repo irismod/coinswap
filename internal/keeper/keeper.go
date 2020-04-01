@@ -142,7 +142,6 @@ func (k Keeper) addLiquidity(ctx sdk.Context, sender sdk.AccAddress, standardCoi
 	if err := k.sk.MintCoins(ctx, types.ModuleName, mintToken); err != nil {
 		return err
 	}
-	// send half of the liquidity vouchers from module account to sender
 	if err := k.sk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, mintToken); err != nil {
 		return err
 	}
