@@ -9,10 +9,10 @@ var ModuleCdc *codec.Codec
 
 // RegisterCodec registers concrete types on the codec.
 func RegisterCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgSwapOrder{}, "irishub/coinswap/MsgSwapOrder", nil)
-	cdc.RegisterConcrete(MsgAddLiquidity{}, "irishub/coinswap/MsgAddLiquidity", nil)
-	cdc.RegisterConcrete(MsgRemoveLiquidity{}, "irishub/coinswap/MsgRemoveLiquidity", nil)
-	cdc.RegisterConcrete(&Params{}, "irishub/coinswap/Params", nil)
+	cdc.RegisterConcrete(MsgSwapOrder{}, "irismod/coinswap/MsgSwapOrder", nil)
+	cdc.RegisterConcrete(MsgAddLiquidity{}, "irismod/coinswap/MsgAddLiquidity", nil)
+	cdc.RegisterConcrete(MsgRemoveLiquidity{}, "irismod/coinswap/MsgRemoveLiquidity", nil)
+	cdc.RegisterConcrete(&Params{}, "irismod/coinswap/Params", nil)
 }
 
 func init() {
