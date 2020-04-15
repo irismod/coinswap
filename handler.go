@@ -45,7 +45,7 @@ func handleMsgSwapOrder(ctx sdk.Context, k Keeper, msg MsgSwapOrder) (*sdk.Resul
 	)
 
 	return &sdk.Result{
-		Events: ctx.EventManager().Events(),
+		Events: ctx.EventManager().ABCIEvents(),
 	}, nil
 }
 
@@ -70,7 +70,7 @@ func handleMsgAddLiquidity(ctx sdk.Context, k Keeper, msg MsgAddLiquidity) (*sdk
 	)
 
 	return &sdk.Result{
-		Events: ctx.EventManager().Events(),
+		Events: ctx.EventManager().ABCIEvents(),
 	}, nil
 }
 
@@ -94,6 +94,6 @@ func handleMsgRemoveLiquidity(ctx sdk.Context, k Keeper, msg MsgRemoveLiquidity)
 	)
 
 	return &sdk.Result{
-		Events: ctx.EventManager().Events(),
+		Events: ctx.EventManager().ABCIEvents(),
 	}, nil
 }
