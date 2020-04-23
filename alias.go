@@ -56,7 +56,6 @@ var (
 	NewParams                = types.NewParams
 	ParamKeyTable            = types.ParamKeyTable
 	DefaultParams            = types.DefaultParams
-	GetUniDenomFromDenoms    = types.GetUniDenomFromDenoms
 	GetUniDenomFromDenom     = types.GetUniDenomFromDenom
 	GetCoinDenomFromUniDenom = types.GetCoinDenomFromUniDenom
 	CheckUniDenom            = types.CheckUniDenom

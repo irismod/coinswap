@@ -20,20 +20,6 @@ func GetTokenPairByDenom(inputDenom, outputDenom string) string {
 	return fmt.Sprintf("%s-%s", outputDenom, inputDenom)
 }
 
-// GetUniDenomFromDenoms returns the uni denom for the provided denominations.
-func GetUniDenomFromDenoms(denom1, denom2 string) (string, error) {
-	if denom1 == denom2 {
-		return "", ErrEqualDenom
-	}
-	if denom1 != StandardDenom && denom2 != StandardDenom {
-		return "", sdkerrors.Wrap(ErrNotContainStandardDenom, fmt.Sprintf("standard denom: %s,denom1: %s,denom2: %s", StandardDenom, denom1, denom2))
-	}
-	if denom1 == StandardDenom {
-		return fmt.Sprintf(FormatUniDenom, denom2), nil
-	}
-	return fmt.Sprintf(FormatUniDenom, denom1), nil
-}
-
 // GetUniDenomFromDenom returns the uni denom for the provided denomination.
 func GetUniDenomFromDenom(denom string) (string, error) {
 	if denom == StandardDenom {
