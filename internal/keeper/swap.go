@@ -10,7 +10,7 @@ import (
 )
 
 func (k Keeper) swapCoins(ctx sdk.Context, sender, recipient sdk.AccAddress, coinSold, coinBought sdk.Coin) error {
-	uniDenom, err := types.GetUniDenomFromDenoms(coinSold.Denom, coinBought.Denom)
+	uniDenom, err := k.GetUniDenomFromDenoms(ctx,coinSold.Denom, coinBought.Denom)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ Calculate the amount of another token to be received based on the exact amount o
 @return : token amount that will to be received
 */
 func (k Keeper) calculateWithExactInput(ctx sdk.Context, exactSoldCoin sdk.Coin, boughtTokenDenom string) (sdk.Int, error) {
-	uniDenom, err := types.GetUniDenomFromDenoms(exactSoldCoin.Denom, boughtTokenDenom)
+	uniDenom, err := k.GetUniDenomFromDenoms(ctx,exactSoldCoin.Denom, boughtTokenDenom)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -125,7 +125,7 @@ Calculate the amount of the token to be paid based on the exact amount of the to
 @return: actual amount of the token to be paid
 */
 func (k Keeper) calculateWithExactOutput(ctx sdk.Context, exactBoughtCoin sdk.Coin, soldTokenDenom string) (sdk.Int, error) {
-	uniDenom, err := types.GetUniDenomFromDenoms(exactBoughtCoin.Denom, soldTokenDenom)
+	uniDenom, err := k.GetUniDenomFromDenoms(ctx,exactBoughtCoin.Denom, soldTokenDenom)
 	if err != nil {
 		return sdk.ZeroInt(), sdkerrors.Wrap(types.ErrReservePoolNotExists, uniDenom)
 	}

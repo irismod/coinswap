@@ -248,3 +248,19 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramSpace.SetParamSet(ctx, &params)
 }
+
+// GetUniDenomFromDenoms returns the uni denom for the provided denominations.
+func (k Keeper) GetUniDenomFromDenoms(ctx sdk.Context,denom1, denom2 string) (string, error) {
+	if denom1 == denom2 {
+		return "", types.ErrEqualDenom
+	}
+
+	standardDenom := k.GetParams(ctx).StandardDenom
+	if denom1 != standardDenom && denom2 != standardDenom {
+		return "", sdkerrors.Wrap(types.ErrNotContainStandardDenom, fmt.Sprintf("standard denom: %s,denom1: %s,denom2: %s", standardDenom, denom1, denom2))
+	}
+	if denom1 == standardDenom {
+		return fmt.Sprintf(types.FormatUniDenom, denom2), nil
+	}
+	return fmt.Sprintf(types.FormatUniDenom, denom1), nil
+}
