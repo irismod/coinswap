@@ -68,7 +68,6 @@ var (
 
 type (
 	Keeper                 = keeper.Keeper
-	SupplyKeeper           = types.SupplyKeeper
 	BaseSendKeeper         = types.BankKeeper
 	AccountKeeper          = types.AccountKeeper
 	Input                  = types.Input

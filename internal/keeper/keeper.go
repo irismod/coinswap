@@ -20,7 +20,6 @@ type Keeper struct {
 	storeKey   sdk.StoreKey
 	bk         types.BankKeeper
 	ak         types.AccountKeeper
-	sk         types.SupplyKeeper
 	paramSpace params.Subspace
 }
 
@@ -28,9 +27,9 @@ type Keeper struct {
 // - creating new ModuleAccounts for each trading pair
 // - burning minting liquidity coins
 // - sending to and from ModuleAccounts
-func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, bk types.BankKeeper, ak types.AccountKeeper, sk types.SupplyKeeper, paramSpace params.Subspace) Keeper {
+func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, bk types.BankKeeper, ak types.AccountKeeper, paramSpace params.Subspace) Keeper {
 	// ensure coinswap module account is set
-	if addr := sk.GetModuleAddress(types.ModuleName); addr == nil {
+	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
 	}
 
@@ -38,7 +37,6 @@ func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, bk types.BankKeeper, ak types
 		storeKey:   key,
 		bk:         bk,
 		ak:         ak,
-		sk:         sk,
 		cdc:        cdc,
 		paramSpace: paramSpace.WithKeyTable(types.ParamKeyTable()),
 	}
@@ -46,7 +44,7 @@ func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, bk types.BankKeeper, ak types
 
 // Logger returns a module-specific logger.
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("%s", types.ModuleName))
+	return ctx.Logger().With("module", types.ModuleName)
 }
 
 // Swap execute swap order in specified pool
@@ -95,7 +93,7 @@ func (k Keeper) AddLiquidity(ctx sdk.Context, msg types.MsgAddLiquidity) error {
 	reservePool := k.GetReservePool(ctx, uniDenom)
 	standardReserveAmt := reservePool.AmountOf(standardDenom)
 	tokenReserveAmt := reservePool.AmountOf(msg.MaxToken.Denom)
-	liquidity := k.bk.GetBalance(ctx, k.sk.GetModuleAddress(types.ModuleName), uniDenom).Amount
+	liquidity := k.bk.GetBalance(ctx, k.ak.GetModuleAddress(types.ModuleName), uniDenom).Amount
 
 	var mintLiquidityAmt sdk.Int
 	var depositToken sdk.Coin
@@ -139,10 +137,10 @@ func (k Keeper) addLiquidity(ctx sdk.Context, sender sdk.AccAddress, standardCoi
 	}
 
 	mintToken := sdk.NewCoins(sdk.NewCoin(uniDenom, mintLiquidityAmt))
-	if err := k.sk.MintCoins(ctx, types.ModuleName, mintToken); err != nil {
+	if err := k.bk.MintCoins(ctx, types.ModuleName, mintToken); err != nil {
 		return err
 	}
-	if err := k.sk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, mintToken); err != nil {
+	if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, mintToken); err != nil {
 		return err
 	}
 
@@ -167,7 +165,7 @@ func (k Keeper) RemoveLiquidity(ctx sdk.Context, msg types.MsgRemoveLiquidity) e
 
 	standardReserveAmt := reservePool.AmountOf(standardDenom)
 	tokenReserveAmt := reservePool.AmountOf(minTokenDenom)
-	liquidityReserve := k.bk.GetBalance(ctx, k.sk.GetModuleAddress(types.ModuleName), uniDenom).Amount
+	liquidityReserve := k.bk.GetBalance(ctx, k.ak.GetModuleAddress(types.ModuleName), uniDenom).Amount
 
 	if standardReserveAmt.LT(msg.MinStandardAmt) {
 		return sdkerrors.Wrap(types.ErrInsufficientFunds, fmt.Sprintf("insufficient %s funds, user expected: %s, actual: %s", standardDenom, msg.MinStandardAmt.String(), standardReserveAmt.String()))
@@ -212,11 +210,11 @@ func (k Keeper) removeLiquidity(ctx sdk.Context, poolAddr, sender sdk.AccAddress
 	deltaCoins := sdk.NewCoins(deductUniCoin)
 
 	// send liquidity vouchers to be burned from sender account to module account
-	if err := k.sk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, deltaCoins); err != nil {
+	if err := k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, deltaCoins); err != nil {
 		return err
 	}
 	// burn liquidity vouchers of reserve pool form module account
-	if err := k.sk.BurnCoins(ctx, types.ModuleName, deltaCoins); err != nil {
+	if err := k.bk.BurnCoins(ctx, types.ModuleName, deltaCoins); err != nil {
 		return err
 	}
 
@@ -250,7 +248,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 }
 
 // GetUniDenomFromDenoms returns the uni denom for the provided denominations.
-func (k Keeper) GetUniDenomFromDenoms(ctx sdk.Context,denom1, denom2 string) (string, error) {
+func (k Keeper) GetUniDenomFromDenoms(ctx sdk.Context, denom1, denom2 string) (string, error) {
 	if denom1 == denom2 {
 		return "", types.ErrEqualDenom
 	}
