@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	"github.com/cosmos/cosmos-sdk/codec"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/irismod/coinswap/internal/types"
+	"github.com/irismod/coinswap/types"
 )
 
 // NewQuerier creates a querier for coinswap REST endpoints
@@ -56,7 +57,7 @@ func queryLiquidity(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, e
 		Fee:       fee,
 	}
 
-	bz, errRes := k.cdc.MarshalJSONIndent(res, "", " ")
+	bz, errRes := codec.MarshalJSONIndent(k.cdc, res)
 	if errRes != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

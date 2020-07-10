@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"strings"
 
+	"gopkg.in/yaml.v2"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 const (
-	// DefaultParamSpace for coinswap
-	DefaultParamspace = ModuleName
 	// StandardDenom for coinswap
 	StandardDenom = sdk.DefaultBondDenom
 )
@@ -21,12 +21,6 @@ var (
 	KeyFee           = []byte("Fee")           // fee key
 	KeyStandardDenom = []byte("StandardDenom") // standard token denom key
 )
-
-// Params defines the fee and native denomination for coinswap
-type Params struct {
-	Fee           sdk.Dec `json:"fee" yaml:"fee"`                       // fee of coinswap
-	StandardDenom string  `json:"standard_denom" yaml:"standard_denom"` // standard token denom of coinswap
-}
 
 // NewParams coinswap paramtypes constructor
 func NewParams(fee sdk.Dec, feeDenom string) Params {
@@ -57,6 +51,12 @@ func DefaultParams() Params {
 		Fee:           fee,
 		StandardDenom: StandardDenom,
 	}
+}
+
+// String returns a human readable string representation of the parameters.
+func (p Params) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
 }
 
 // Validate returns err if Params is invalid

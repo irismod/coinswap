@@ -4,33 +4,37 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/tendermint/tendermint/libs/log"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/params"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/irismod/coinswap/internal/types"
+	"github.com/irismod/coinswap/types"
 )
 
 // Keeper of the coinswap store
 type Keeper struct {
-	cdc        *codec.Codec
+	cdc        codec.Marshaler
 	storeKey   sdk.StoreKey
 	bk         types.BankKeeper
 	ak         types.AccountKeeper
-	paramSpace params.Subspace
+	paramSpace paramstypes.Subspace
 }
 
 // NewKeeper returns a coinswap keeper. It handles:
 // - creating new ModuleAccounts for each trading pair
 // - burning minting liquidity coins
 // - sending to and from ModuleAccounts
-func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, bk types.BankKeeper, ak types.AccountKeeper, paramSpace params.Subspace) Keeper {
+func NewKeeper(cdc codec.Marshaler, key sdk.StoreKey, paramSpace paramstypes.Subspace, bk types.BankKeeper, ak types.AccountKeeper) Keeper {
 	// ensure coinswap module account is set
 	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
+	}
+
+	// set KeyTable if it has not already been set
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
 	return Keeper{
@@ -38,7 +42,7 @@ func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, bk types.BankKeeper, ak types
 		bk:         bk,
 		ak:         ak,
 		cdc:        cdc,
-		paramSpace: paramSpace.WithKeyTable(types.ParamKeyTable()),
+		paramSpace: paramSpace,
 	}
 }
 
@@ -48,7 +52,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Swap execute swap order in specified pool
-func (k Keeper) Swap(ctx sdk.Context, msg types.MsgSwapOrder) error {
+func (k Keeper) Swap(ctx sdk.Context, msg *types.MsgSwapOrder) error {
 	var amount sdk.Int
 	var err error
 
@@ -83,7 +87,7 @@ func (k Keeper) Swap(ctx sdk.Context, msg types.MsgSwapOrder) error {
 }
 
 // AddLiquidity add liquidity to specified pool
-func (k Keeper) AddLiquidity(ctx sdk.Context, msg types.MsgAddLiquidity) error {
+func (k Keeper) AddLiquidity(ctx sdk.Context, msg *types.MsgAddLiquidity) error {
 	standardDenom := k.GetParams(ctx).StandardDenom
 	uniDenom, err := types.GetUniDenomFromDenom(msg.MaxToken.Denom)
 	if err != nil {
@@ -148,7 +152,7 @@ func (k Keeper) addLiquidity(ctx sdk.Context, sender sdk.AccAddress, standardCoi
 }
 
 // RemoveLiquidity remove liquidity from specified pool
-func (k Keeper) RemoveLiquidity(ctx sdk.Context, msg types.MsgRemoveLiquidity) error {
+func (k Keeper) RemoveLiquidity(ctx sdk.Context, msg *types.MsgRemoveLiquidity) error {
 	standardDenom := k.GetParams(ctx).StandardDenom
 	uniDenom := msg.WithdrawLiquidity.Denom
 
