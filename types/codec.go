@@ -9,9 +9,9 @@ import (
 
 // RegisterCodec registers concrete types on the codec.
 func RegisterCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgSwapOrder{}, "irismod/coinswap/MsgSwapOrder", nil)
-	cdc.RegisterConcrete(MsgAddLiquidity{}, "irismod/coinswap/MsgAddLiquidity", nil)
-	cdc.RegisterConcrete(MsgRemoveLiquidity{}, "irismod/coinswap/MsgRemoveLiquidity", nil)
+	cdc.RegisterConcrete(&MsgSwapOrder{}, "irismod/coinswap/MsgSwapOrder", nil)
+	cdc.RegisterConcrete(&MsgAddLiquidity{}, "irismod/coinswap/MsgAddLiquidity", nil)
+	cdc.RegisterConcrete(&MsgRemoveLiquidity{}, "irismod/coinswap/MsgRemoveLiquidity", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
