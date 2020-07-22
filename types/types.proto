@@ -4,7 +4,7 @@ package irismod.coinswap;
 import "third_party/proto/gogoproto/gogo.proto";
 import "third_party/proto/cosmos_proto/types.proto";
 
-option go_package = "github.com/irismod/token/types";
+option go_package = "github.com/irismod/coinswap/types";
 option (gogoproto.goproto_getters_all) = false;
 
 // MsgAddLiquidity represents a msg for adding liquidity to a reserve pool

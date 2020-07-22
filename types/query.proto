@@ -4,9 +4,9 @@ package irismod.coinswap;
 import "third_party/proto/gogoproto/gogo.proto";
 import "third_party/proto/cosmos_proto/types.proto";
 
-option go_package = "github.com/irismod/token/types";
+option go_package = "github.com/irismod/coinswap/types";
 
-// Query creates service with token as rpc
+// Query creates service with coinswap as rpc
 service Query {
     // Liquidity returns the total liquidity available for the provided denomination
     rpc Liquidity (QueryLiquidityRequest) returns (QueryLiquidityResponse) {
