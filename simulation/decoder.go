@@ -1,10 +1,10 @@
 package simulation
 
 import (
-	tmkv "github.com/tendermint/tendermint/libs/kv"
+	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
 // DecodeStore unmarshals the KVPair's Value to the corresponding htlc type
-func DecodeStore(kvA, kvB tmkv.Pair) string {
+func DecodeStore(kvA, kvB kv.Pair) string {
 	return ""
 }
