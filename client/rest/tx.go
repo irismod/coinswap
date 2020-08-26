@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	utils "github.com/cosmos/cosmos-sdk/x/auth/client"
 	"github.com/gorilla/mux"
 
 	"github.com/irismod/coinswap/types"
@@ -43,11 +43,11 @@ func addLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		var req AddLiquidityReq
-		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
 			return
 		}
 
-		baseReq := req.BaseTx.Sanitize()
+		baseReq := req.BaseReq.Sanitize()
 		if !baseReq.ValidateBasic(w) {
 			return
 		}
@@ -95,7 +95,7 @@ func addLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		utils.WriteGenerateStdTxResponse(w, cliCtx, req.BaseTx, []sdk.Msg{msg})
+		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, msg)
 	}
 }
 
@@ -111,11 +111,11 @@ func removeLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		var req RemoveLiquidityReq
-		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
 			return
 		}
 
-		baseReq := req.BaseTx.Sanitize()
+		baseReq := req.BaseReq.Sanitize()
 		if !baseReq.ValidateBasic(w) {
 			return
 		}
@@ -165,7 +165,7 @@ func removeLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		utils.WriteGenerateStdTxResponse(w, cliCtx, req.BaseTx, []sdk.Msg{msg})
+		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, msg)
 	}
 }
 
@@ -173,11 +173,11 @@ func removeLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 func swapOrderHandlerFn(cliCtx client.Context, isBuyOrder bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req SwapOrderReq
-		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
 			return
 		}
 
-		baseReq := req.BaseTx.Sanitize()
+		baseReq := req.BaseReq.Sanitize()
 		if !baseReq.ValidateBasic(w) {
 			return
 		}
@@ -219,6 +219,6 @@ func swapOrderHandlerFn(cliCtx client.Context, isBuyOrder bool) http.HandlerFunc
 			return
 		}
 
-		utils.WriteGenerateStdTxResponse(w, cliCtx, req.BaseTx, []sdk.Msg{msg})
+		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, msg)
 	}
 }

@@ -3,9 +3,10 @@ module github.com/irismod/coinswap
 go 1.14
 
 require (
-	github.com/cosmos/cosmos-sdk v0.34.4-0.20200822132506-07d9b865eea8
+	github.com/cosmos/cosmos-sdk v0.34.4-0.20200825201020-d9fd4d2ca9a3
 	github.com/gogo/protobuf v1.3.1
-	github.com/gorilla/mux v1.7.4
+	github.com/gorilla/mux v1.8.0
+	github.com/grpc-ecosystem/grpc-gateway v1.14.7
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.1
 	github.com/tendermint/tendermint v0.34.0-rc3

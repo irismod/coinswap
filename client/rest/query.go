@@ -31,7 +31,7 @@ func queryLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			ID: id,
 		}
 
-		bz, err := cliCtx.Codec.MarshalJSON(params)
+		bz, err := cliCtx.JSONMarshaler.MarshalJSON(params)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
