@@ -1,11 +1,10 @@
 package rest
 
 import (
-	"github.com/gorilla/mux"
-
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/gorilla/mux"
 )
 
 // Rest variable names
@@ -14,15 +13,15 @@ const (
 	RestPoolID = "pool-id"
 )
 
-// RegisterRoutes registers asset-related REST handlers to a router
-func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
+// RegisterHandlers registers asset-related REST handlers to a router
+func RegisterHandlers(cliCtx client.Context, r *mux.Router) {
 	registerQueryRoutes(cliCtx, r)
 	registerTxRoutes(cliCtx, r)
 }
 
 // AddLiquidityReq defines the properties of a add liquidity request's body
 type AddLiquidityReq struct {
-	BaseTx           rest.BaseReq `json:"base_tx" yaml:"base_tx"`
+	BaseReq          rest.BaseReq `json:"base_req" yaml:"base_req"`
 	ID               string       `json:"id" yaml:"id"`                                 // the unique liquidity id
 	MaxToken         string       `json:"max_token" yaml:"max_token"`                   // token to be deposited as liquidity with an upper bound for its amount
 	ExactStandardAmt string       `json:"exact_standard_amt" yaml:"exact_standard_amt"` // exact amount of standard token being add to the liquidity pool
@@ -33,7 +32,7 @@ type AddLiquidityReq struct {
 
 // RemoveLiquidityReq defines the properties of a remove liquidity request's body
 type RemoveLiquidityReq struct {
-	BaseTx            rest.BaseReq `json:"base_tx" yaml:"base_tx"`
+	BaseReq           rest.BaseReq `json:"base_req" yaml:"base_req"`
 	ID                string       `json:"id" yaml:"id"`                                 // the unique liquidity id
 	MinToken          string       `json:"min_token" yaml:"min_token"`                   // coin to be withdrawn with a lower bound for its amount
 	WithdrawLiquidity string       `json:"withdraw_liquidity" yaml:"withdraw_liquidity"` // amount of UNI to be burned to withdraw liquidity from a reserve pool
@@ -56,7 +55,7 @@ type Output struct {
 
 // SwapOrderReq defines the properties of a swap request's body
 type SwapOrderReq struct {
-	BaseTx   rest.BaseReq `json:"base_tx" yaml:"base_tx"`
+	BaseReq  rest.BaseReq `json:"base_req" yaml:"base_req"`
 	Input    Input        `json:"input" yaml:"input"`       // the amount the sender is trading
 	Output   Output       `json:"output" yaml:"output"`     // the amount the sender is receiving
 	Deadline string       `json:"deadline" yaml:"deadline"` // deadline for the transaction to still be considered valid

@@ -5,17 +5,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
-
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	utils "github.com/cosmos/cosmos-sdk/x/auth/client"
+	"github.com/gorilla/mux"
 
-	"github.com/irismod/coinswap/internal/types"
+	"github.com/irismod/coinswap/types"
 )
 
-func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {
+func registerTxRoutes(cliCtx client.Context, r *mux.Router) {
 	// add liquidity
 	r.HandleFunc(fmt.Sprintf("/coinswap/liquidities/{%s}/deposit", RestPoolID), addLiquidityHandlerFn(cliCtx)).Methods("POST")
 	// remove liquidity
@@ -27,7 +26,7 @@ func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {
 }
 
 // HTTP request handler to add liquidity.
-func addLiquidityHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func addLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		uniDenom := vars[RestPoolID]
@@ -44,11 +43,11 @@ func addLiquidityHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		var req AddLiquidityReq
-		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
 			return
 		}
 
-		baseReq := req.BaseTx.Sanitize()
+		baseReq := req.BaseReq.Sanitize()
 		if !baseReq.ValidateBasic(w) {
 			return
 		}
@@ -96,12 +95,12 @@ func addLiquidityHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		utils.WriteGenerateStdTxResponse(w, cliCtx, req.BaseTx, []sdk.Msg{msg})
+		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, msg)
 	}
 }
 
 // HTTP request handler to remove liquidity.
-func removeLiquidityHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func removeLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		uniDenom := vars[RestPoolID]
@@ -112,11 +111,11 @@ func removeLiquidityHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		var req RemoveLiquidityReq
-		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
 			return
 		}
 
-		baseReq := req.BaseTx.Sanitize()
+		baseReq := req.BaseReq.Sanitize()
 		if !baseReq.ValidateBasic(w) {
 			return
 		}
@@ -166,19 +165,19 @@ func removeLiquidityHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		utils.WriteGenerateStdTxResponse(w, cliCtx, req.BaseTx, []sdk.Msg{msg})
+		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, msg)
 	}
 }
 
 // HTTP request handler to post order.
-func swapOrderHandlerFn(cliCtx context.CLIContext, isBuyOrder bool) http.HandlerFunc {
+func swapOrderHandlerFn(cliCtx client.Context, isBuyOrder bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req SwapOrderReq
-		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
 			return
 		}
 
-		baseReq := req.BaseTx.Sanitize()
+		baseReq := req.BaseReq.Sanitize()
 		if !baseReq.ValidateBasic(w) {
 			return
 		}
@@ -220,6 +219,6 @@ func swapOrderHandlerFn(cliCtx context.CLIContext, isBuyOrder bool) http.Handler
 			return
 		}
 
-		utils.WriteGenerateStdTxResponse(w, cliCtx, req.BaseTx, []sdk.Msg{msg})
+		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, msg)
 	}
 }
