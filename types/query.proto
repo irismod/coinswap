@@ -2,7 +2,7 @@ syntax = "proto3";
 package irismod.coinswap;
 
 import "third_party/proto/gogoproto/gogo.proto";
-import "third_party/proto/cosmos_proto/types.proto";
+import "third_party/proto/cosmos_proto/coin.proto";
 
 option go_package = "github.com/irismod/coinswap/types";
 
@@ -20,8 +20,8 @@ message QueryLiquidityRequest {
 
 // QueryLiquidityResponse is response type for the Query/Liquidity RPC method
 message QueryLiquidityResponse {
-    cosmos_sdk.v1.Coin standard = 1 [(gogoproto.nullable) = false];
-    cosmos_sdk.v1.Coin token = 2 [(gogoproto.nullable) = false];
-    cosmos_sdk.v1.Coin liquidity = 3 [(gogoproto.nullable) = false];
+    cosmos.base.v1beta1.Coin standard = 1 [(gogoproto.nullable) = false];
+    cosmos.base.v1beta1.Coin token = 2 [(gogoproto.nullable) = false];
+    cosmos.base.v1beta1.Coin liquidity = 3 [(gogoproto.nullable) = false];
     string fee = 4;
 }
