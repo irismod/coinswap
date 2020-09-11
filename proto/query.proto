@@ -11,7 +11,7 @@ option go_package = "github.com/irismod/coinswap/types";
 service Query {
     // Liquidity returns the total liquidity available for the provided denomination
     rpc Liquidity (QueryLiquidityRequest) returns (QueryLiquidityResponse) {
-      option (google.api.http).get = "/irismod/coinswap/liquidity/{id}";
+      option (google.api.http).get = "/irismod/coinswap/liquidities/{id}";
     }
 }
 
