@@ -1,8 +1,8 @@
 syntax = "proto3";
 package irismod.coinswap;
 
-import "third_party/proto/gogoproto/gogo.proto";
-import "third_party/proto/cosmos_proto/coin.proto";
+import "cosmos_proto/coin.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/irismod/coinswap/types";
 option (gogoproto.goproto_getters_all) = false;

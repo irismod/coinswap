@@ -3,9 +3,10 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/irismod/coinswap/types"
 )
@@ -17,18 +18,18 @@ func (k Keeper) Liquidity(c context.Context, req *types.QueryLiquidityRequest) (
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := types.CheckUniDenom(req.ID); err != nil {
+	if err := types.CheckUniDenom(req.Id); err != nil {
 		return nil, err
 	}
 
-	uniDenom := req.ID
+	uniDenom := req.Id
 
 	tokenDenom, err := types.GetCoinDenomFromUniDenom(uniDenom)
 	if err != nil {
 		return nil, err
 	}
 
-	reservePool := k.GetReservePool(ctx, req.ID)
+	reservePool := k.GetReservePool(ctx, req.Id)
 
 	standardDenom := k.GetParams(ctx).StandardDenom
 	standard := sdk.NewCoin(standardDenom, reservePool.AmountOf(standardDenom))
