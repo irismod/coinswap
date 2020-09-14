@@ -10,7 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	
+
 	"github.com/irismod/coinswap/types"
 )
 

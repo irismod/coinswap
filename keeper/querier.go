@@ -11,7 +11,7 @@ import (
 )
 
 // NewQuerier creates a querier for coinswap REST endpoints
-func NewQuerier(k Keeper, legacyQuerierCdc codec.JSONMarshaler) sdk.Querier {
+func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) (res []byte, err error) {
 		switch path[0] {
 		case types.QueryLiquidity:
@@ -24,7 +24,7 @@ func NewQuerier(k Keeper, legacyQuerierCdc codec.JSONMarshaler) sdk.Querier {
 
 // queryLiquidity returns the total liquidity available for the provided denomination
 // upon success or an error if the query fails.
-func queryLiquidity(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc codec.JSONMarshaler) ([]byte, error) {
+func queryLiquidity(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryLiquidityParams
 	standardDenom := k.GetParams(ctx).StandardDenom
 	if err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); err != nil {
