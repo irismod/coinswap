@@ -118,5 +118,7 @@ format:
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" | xargs goimports -w -local github.com/irismod/coinswap
 .PHONY: format
 
+proto-all: proto-tools proto-gen
+
 proto-gen:
 	@./scripts/protocgen.sh

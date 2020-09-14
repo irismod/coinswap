@@ -1,1 +1,10 @@
+vendor
+.DS_Store
 .idea
+.vscode
+build/
+.out
+package.json
+yarn.lock
+dependency-graph.png
+buf-stamp

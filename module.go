@@ -1,11 +1,17 @@
 package coinswap
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"math/rand"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/gogo/protobuf/grpc"
+	"github.com/gorilla/mux"
+	"github.com/spf13/cobra"
+
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -13,11 +19,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/gogo/protobuf/grpc"
-	"github.com/gorilla/mux"
-	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
-
+	
 	"github.com/irismod/coinswap/client/rest"
 	"github.com/irismod/coinswap/keeper"
 	"github.com/irismod/coinswap/simulation"
@@ -66,6 +68,7 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Rout
 
 // RegisterGRPCRoutes registers the gRPC Gateway routes for the coinswap module.
 func (a AppModuleBasic) RegisterGRPCRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
+	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 }
 
 // GetTxCmd returns the root tx command for the coinswap module.
