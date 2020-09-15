@@ -44,7 +44,7 @@ func addLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		var req AddLiquidityReq
-		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
 			return
 		}
 
@@ -112,7 +112,7 @@ func removeLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		var req RemoveLiquidityReq
-		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
 			return
 		}
 
@@ -174,7 +174,7 @@ func removeLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 func swapOrderHandlerFn(cliCtx client.Context, isBuyOrder bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req SwapOrderReq
-		if !rest.ReadRESTReq(w, r, cliCtx.JSONMarshaler, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
 			return
 		}
 

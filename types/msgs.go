@@ -82,7 +82,7 @@ func (msg MsgSwapOrder) ValidateBasic() error {
 
 // GetSignBytes implements Msg.
 func (msg MsgSwapOrder) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners implements Msg.
@@ -145,7 +145,7 @@ func (msg MsgAddLiquidity) ValidateBasic() error {
 
 // GetSignBytes implements Msg.
 func (msg MsgAddLiquidity) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners implements Msg.
@@ -205,7 +205,7 @@ func (msg MsgRemoveLiquidity) ValidateBasic() error {
 
 // GetSignBytes implements Msg.
 func (msg MsgRemoveLiquidity) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners implements Msg.

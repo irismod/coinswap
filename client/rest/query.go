@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	
+
 	"github.com/irismod/coinswap/types"
 )
 
@@ -32,7 +32,7 @@ func queryLiquidityHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			ID: id,
 		}
 
-		bz, err := cliCtx.JSONMarshaler.MarshalJSON(params)
+		bz, err := cliCtx.LegacyAmino.MarshalJSON(params)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
